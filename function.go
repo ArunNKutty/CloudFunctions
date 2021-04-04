@@ -9,28 +9,28 @@ import (
 	"net/http"
 )
 
+var substrings = []string{"Google","Oracle","Microsoft","Amazon"}
 // HelloWorld prints the JSON encoded "message" field in the body
 // of the request or "Hello, World!" if there isn't one.
 func HelloWorld(w http.ResponseWriter, r *http.Request) {
-	var d struct {
-		Message string `json:"message"`
-	}
+	queryParamDisplayHandler(w, r)
+}
 
-	if err := json.NewDecoder(r.Body).Decode(&d); err != nil {
-		switch err {
-		case io.EOF:
-			fmt.Fprint(w, "Hello World!")
-			return
-		default:
-			log.Printf("json.NewDecoder: %v", err)
-			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-			return
+
+func checkSubstrings(inputString string) string {
+	for _, sub := range substrings {
+		if strings.Contains(inputString, sub) {
+			inputString = strings.ReplaceAll(inputString,sub,"©"+sub)
 		}
 	}
+	return inputString
+}
 
-	if d.Message == "" {
-		fmt.Fprint(w, "Hello World!")
-		return
+func queryParamDisplayHandler(res http.ResponseWriter, req *http.Request) {
+	inputSentence := req.FormValue("sentence")
+	if inputSentence != "" {
+		io.WriteString(res, "New Copyrighted Sentence: "+checkSubstrings(inputSentence))
+	} else {
+		io.WriteString(res, "New Copyrighted Sentence: "+"The Input sentence is empty")
 	}
-	fmt.Fprint(w, html.EscapeString(d.Message))
 }
