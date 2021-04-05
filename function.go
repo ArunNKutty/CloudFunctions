@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var substrings = []string{"Google","Oracle","Microsoft","Amazon"}
+var substrings = []string{"Google","Oracle","Microsoft","Amazon","google","oracle","microsoft","amazon"}
 
 //CopyRight adds a copyright symbol if the above strings are encountered
 func CopyRight(w http.ResponseWriter, r *http.Request) {
@@ -17,7 +17,7 @@ func CopyRight(w http.ResponseWriter, r *http.Request) {
 func checkSubstrings(inputString string) string {
 	for _, sub := range substrings {
 		if strings.Contains(inputString, sub) {
-			inputString = strings.ReplaceAll(inputString,sub,"©"+sub)
+			inputString = strings.ReplaceAll(inputString,sub,sub+"©")
 		}
 	}
 	return inputString
